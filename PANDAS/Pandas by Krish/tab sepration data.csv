@@ -1,0 +1,5 @@
+item_code	item_name	display_level	selectable	sort_sequence
+AA0	All items - old base	0	T	2
+AA0R	Purchasing power of the consumer dollar - old base	0	T	399
+SA0	All items	0	T	1
+SA0E	Energy	1	T	374

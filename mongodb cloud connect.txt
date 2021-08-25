@@ -1,0 +1,26 @@
+mongodb cloud cluster connect
+
+client = pymongo.MongoClient("mongodb+srv://Aadil111:<password>@cluster0.qd9d5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+db = client.test
+
+since, my password was a special character so i used 
+import pymongo
+import urllib
+client = pymongo.MongoClient("mongodb+srv://Aadil111:"+urllib.parse.quote("Aadil@78600")+"@cluster0.qd9d5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+db = client.test
+
+
+
+
+
+
+
+
+
+import pymongo
+
+client = pymongo.MongoClient("mongodb+srv://Aadil111:Aadil111@cluster0.qd9d5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+db = client.test
+
+
+mongodb+srv://Aadil111:Aadil111@cluster0.qd9d5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority

@@ -1,0 +1,32 @@
+graphics card - 6gb/8gb (may be of gtx)
+mother board - 2-3 pci slot  (rig extender)
+power supply unit - 500 watt  (psu)
+core 2 duo - processor i3 (2-3 generation)
+ram - 2-4(gb)
+hard disk 250 gb 
+ssd - 128 gb
+monitor - 1k 
+
+
+gpu budget 30000
+
+
+top 5 gpu video 
+6060 super
+
+hash rate should be 30+ minimum 
+
+nicehash mining website
+
+wazirx & coinbase
+
+solo mining & pool mining
+
+
+
+best graphics card:-
+1. 6gb 1660 super - 32 h/r
+2. 6060 ti 
+3. genfox 1070 - 34h/r 
+4. nvedia gtx 1070 ti
+5. nvdia rtx 2060

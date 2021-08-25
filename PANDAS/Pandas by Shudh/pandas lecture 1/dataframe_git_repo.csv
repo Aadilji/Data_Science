@@ -1,0 +1,266 @@
+,url,repository_url,labels_url,comments_url,events_url,html_url,id,node_id,number,title,user,labels,state,locked,assignee,assignees,milestone,comments,created_at,updated_at,closed_at,author_association,active_lock_reason,pull_request,body,performed_via_github_app
+0,https://api.github.com/repos/pandas-dev/pandas/issues/41931,https://api.github.com/repos/pandas-dev/pandas,https://api.github.com/repos/pandas-dev/pandas/issues/41931/labels{/name},https://api.github.com/repos/pandas-dev/pandas/issues/41931/comments,https://api.github.com/repos/pandas-dev/pandas/issues/41931/events,https://github.com/pandas-dev/pandas/pull/41931,917753473,MDExOlB1bGxSZXF1ZXN0NjY3MjUwNjE3,41931,BUG/REF: use sorted_rank_1d for rank_2d,"{'login': 'mzeitlin11', 'id': 37011898, 'node_id': 'MDQ6VXNlcjM3MDExODk4', 'avatar_url': 'https://avatars.githubusercontent.com/u/37011898?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/mzeitlin11', 'html_url': 'https://github.com/mzeitlin11', 'followers_url': 'https://api.github.com/users/mzeitlin11/followers', 'following_url': 'https://api.github.com/users/mzeitlin11/following{/other_user}', 'gists_url': 'https://api.github.com/users/mzeitlin11/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/mzeitlin11/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/mzeitlin11/subscriptions', 'organizations_url': 'https://api.github.com/users/mzeitlin11/orgs', 'repos_url': 'https://api.github.com/users/mzeitlin11/repos', 'events_url': 'https://api.github.com/users/mzeitlin11/events{/privacy}', 'received_events_url': 'https://api.github.com/users/mzeitlin11/received_events', 'type': 'User', 'site_admin': False}","[{'id': 57296398, 'node_id': 'MDU6TGFiZWw1NzI5NjM5OA==', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Algos', 'name': 'Algos', 'color': 'eb6420', 'default': False, 'description': 'Non-arithmetic algos: value_counts, factorize, sorting, isin, clip, shift, diff'}, {'id': 76811, 'node_id': 'MDU6TGFiZWw3NjgxMQ==', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Bug', 'name': 'Bug', 'color': 'e10c02', 'default': False, 'description': None}, {'id': 127681, 'node_id': 'MDU6TGFiZWwxMjc2ODE=', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Refactor', 'name': 'Refactor', 'color': 'FCE94F', 'default': False, 'description': 'Internal refactoring of code'}]",open,False,,[],,0,2021-06-10T19:15:10Z,2021-06-10T19:19:12Z,,MEMBER,,"{'url': 'https://api.github.com/repos/pandas-dev/pandas/pulls/41931', 'html_url': 'https://github.com/pandas-dev/pandas/pull/41931', 'diff_url': 'https://github.com/pandas-dev/pandas/pull/41931.diff', 'patch_url': 'https://github.com/pandas-dev/pandas/pull/41931.patch'}","- [x] closes #19560 (All the inconsistencies are addressed, but could be left open if we want to remove object support)
+- [x] tests added / passed
+- [x] Ensure all linting tests pass, see [here](https://pandas.pydata.org/pandas-docs/dev/development/contributing.html#code-standards) for how to run them
+- [x] whatsnew entry
+
+Built on #41916
+
+There is a slight slowdown in 3 benchmarks, due to use of `lexsort` instead of `argsort` to sort with both the data and mask so that `na_option` can be properly handled.  I am not sure if this can be avoided (though as a plus there is also potential perf improvement for users running code in parallel since the ranking is in a `nogil` block now).
+
+Benchmarks:
+<details>
+
+```
+[499ef8c0]       [d678bbf0]
+<master>         <ref/rank_2d_dedup>
+7.14±0.1ms       7.04±0.4ms     0.99  categoricals.Rank.time_rank_int
+7.85±0.3ms       7.34±0.2ms     0.93  categoricals.Rank.time_rank_int_cat
+7.30±0.2ms       6.95±0.6ms     0.95  categoricals.Rank.time_rank_int_cat_ordered
+121±3ms         122±10ms     1.01  categoricals.Rank.time_rank_string
+8.66±1ms         8.13±1ms     0.94  categoricals.Rank.time_rank_string_cat
+6.37±1ms       6.11±0.4ms     0.96  categoricals.Rank.time_rank_string_cat_ordered
+9.34±2ms         10.1±1ms     1.08  frame_methods.Rank.time_rank('float')
+3.81±1ms       4.16±0.4ms     1.09  frame_methods.Rank.time_rank('int')
+59.0±20ms       48.0±0.9ms    ~0.81  frame_methods.Rank.time_rank('object')
+2.75±0.4ms       3.53±0.7ms    ~1.28  frame_methods.Rank.time_rank('uint')
+1.06±0.04ms      1.01±0.04ms     0.95  groupby.RankWithTies.time_rank_ties('datetime64', 'average')
+1.13±0.06ms      1.02±0.04ms    ~0.90  groupby.RankWithTies.time_rank_ties('datetime64', 'dense')
+1.19±0.1ms      1.04±0.03ms    ~0.87  groupby.RankWithTies.time_rank_ties('datetime64', 'first')
+1.12±0.04ms      1.04±0.06ms     0.93  groupby.RankWithTies.time_rank_ties('datetime64', 'max')
+1.03±0.05ms      1.03±0.04ms     1.00  groupby.RankWithTies.time_rank_ties('datetime64', 'min')
+1.22±0.1ms      1.10±0.07ms    ~0.90  groupby.RankWithTies.time_rank_ties('float32', 'average')
+1.13±0.09ms      1.12±0.04ms     0.99  groupby.RankWithTies.time_rank_ties('float32', 'dense')
+1.15±0.1ms      1.05±0.05ms     0.91  groupby.RankWithTies.time_rank_ties('float32', 'first')
+-     1.19±0.05ms      1.00±0.03ms     0.84  groupby.RankWithTies.time_rank_ties('float32', 'max')
+1.18±0.04ms      1.13±0.08ms     0.96  groupby.RankWithTies.time_rank_ties('float32', 'min')
+1.25±0.1ms      1.17±0.03ms     0.94  groupby.RankWithTies.time_rank_ties('float64', 'average')
+1.45±0.5ms         990±10μs    ~0.68  groupby.RankWithTies.time_rank_ties('float64', 'dense')
+1.21±0.2ms      1.11±0.08ms     0.92  groupby.RankWithTies.time_rank_ties('float64', 'first')
+1.18±0.05ms      1.15±0.07ms     0.97  groupby.RankWithTies.time_rank_ties('float64', 'max')
+1.32±0.3ms         963±40μs    ~0.73  groupby.RankWithTies.time_rank_ties('float64', 'min')
+1.03±0.1ms         971±80μs     0.94  groupby.RankWithTies.time_rank_ties('int64', 'average')
+1.02±0.06ms      1.02±0.06ms     1.01  groupby.RankWithTies.time_rank_ties('int64', 'dense')
+1.13±0.08ms      1.01±0.04ms    ~0.89  groupby.RankWithTies.time_rank_ties('int64', 'first')
+1.24±0.1ms         959±20μs    ~0.77  groupby.RankWithTies.time_rank_ties('int64', 'max')
+1.14±0.06ms         979±50μs    ~0.86  groupby.RankWithTies.time_rank_ties('int64', 'min')
+10.9±0.6ms       9.80±0.4ms    ~0.90  series_methods.Rank.time_rank('float')
+7.18±0.3ms       7.15±0.6ms     1.00  series_methods.Rank.time_rank('int')
+53.7±1ms         49.6±4ms     0.92  series_methods.Rank.time_rank('object')
+7.64±0.2ms       7.78±0.6ms     1.02  series_methods.Rank.time_rank('uint')
+9.96±0.2ms       11.7±0.3ms    ~1.17  stat_ops.Rank.time_average_old('DataFrame', False)
++      9.89±0.2ms       11.9±0.6ms     1.20  stat_ops.Rank.time_average_old('DataFrame', True)
+13.5±0.9ms       12.6±0.8ms     0.93  stat_ops.Rank.time_average_old('Series', False)
+12.8±1ms       11.9±0.6ms     0.93  stat_ops.Rank.time_average_old('Series', True)
++      9.84±0.3ms       11.7±0.4ms     1.19  stat_ops.Rank.time_rank('DataFrame', False)
++      8.53±0.3ms       11.7±0.8ms     1.38  stat_ops.Rank.time_rank('DataFrame', True)
+14.0±3ms         12.2±1ms    ~0.87  stat_ops.Rank.time_rank('Series', False)
+13.0±0.9ms         12.1±1ms     0.93  stat_ops.Rank.time_rank('Series', True)
+```
+
+</details>",
+1,https://api.github.com/repos/pandas-dev/pandas/issues/41930,https://api.github.com/repos/pandas-dev/pandas,https://api.github.com/repos/pandas-dev/pandas/issues/41930/labels{/name},https://api.github.com/repos/pandas-dev/pandas/issues/41930/comments,https://api.github.com/repos/pandas-dev/pandas/issues/41930/events,https://github.com/pandas-dev/pandas/issues/41930,917651513,MDU6SXNzdWU5MTc2NTE1MTM=,41930,BUG: pd.Grouper cannot be reused in some cases ,"{'login': 'mimakaev', 'id': 9454715, 'node_id': 'MDQ6VXNlcjk0NTQ3MTU=', 'avatar_url': 'https://avatars.githubusercontent.com/u/9454715?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/mimakaev', 'html_url': 'https://github.com/mimakaev', 'followers_url': 'https://api.github.com/users/mimakaev/followers', 'following_url': 'https://api.github.com/users/mimakaev/following{/other_user}', 'gists_url': 'https://api.github.com/users/mimakaev/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/mimakaev/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/mimakaev/subscriptions', 'organizations_url': 'https://api.github.com/users/mimakaev/orgs', 'repos_url': 'https://api.github.com/users/mimakaev/repos', 'events_url': 'https://api.github.com/users/mimakaev/events{/privacy}', 'received_events_url': 'https://api.github.com/users/mimakaev/received_events', 'type': 'User', 'site_admin': False}","[{'id': 76811, 'node_id': 'MDU6TGFiZWw3NjgxMQ==', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Bug', 'name': 'Bug', 'color': 'e10c02', 'default': False, 'description': None}, {'id': 1954720290, 'node_id': 'MDU6TGFiZWwxOTU0NzIwMjkw', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Needs%20Triage', 'name': 'Needs Triage', 'color': '0052cc', 'default': False, 'description': 'Issue that has not been reviewed by a pandas team member'}]",open,False,,[],,0,2021-06-10T18:06:00Z,2021-06-10T18:06:00Z,,NONE,,,"- [X] I have checked that this issue has not already been reported.
+
+- [X] I have confirmed this bug exists on the latest version of pandas.
+
+- [X] (optional) I have confirmed this bug exists on the master branch of pandas.
+
+---
+
+#### Code Sample, a copy-pastable example
+
+```python
+import numpy as np 
+import pandas as pd 
+np.random.seed(1)
+# Create one dataframe 
+dr = pd.date_range(""2021-01-01"", ""2021-08-30"")
+ind = np.random.randint(0,5,len(dr))
+something = np.random.random(len(ind))
+df = pd.DataFrame({""date"":dr, ""ind"":ind, ""something"":something})
+
+# Define what to group on 
+GROUP_ON = [""ind"", pd.Grouper(key=""date"", freq=""2W"")]
+# Copy used if you uncomment lines below 
+GROUP_ON_COPY = [""ind"", pd.Grouper(key=""date"", freq=""2W"")]
+
+# Comment either of the two lines below, and it works 
+df.groupby(GROUP_ON).mean().reset_index().groupby(GROUP_ON).mean()
+df.groupby(GROUP_ON).mean().reset_index()
+
+# Use a different groupby in the second case, and it works 
+#df.groupby(GROUP_ON).mean().reset_index().groupby(GROUP_ON).sum()
+#df.groupby(GROUP_ON_COPY).mean().reset_index()
+
+# Bonus points: do only one groupby first, and it works 
+# df.groupby(GROUP_ON).mean().reset_index()
+# df.groupby(GROUP_ON).mean().reset_index()
+
+```
+
+#### Problem description
+
+In some cases it seems that pd.Grouper cannot be reused. I was not able to figure out exactly why, or if the output can sometimes corrupt. It leads to very painful debugging. 
+
+Tested with master branch, and with python 3.8 and 3.9 
+
+#### Expected Output
+
+pd.Grouper should be able to be used any number of times, or should raise explicit error upon any reuse. 
+
+#### Output of ``pd.show_versions()``
+
+<details>
+
+INSTALLED VERSIONS
+------------------
+commit           : 2cb96529396d93b46abab7bbc73a208e708c642e
+python           : 3.9.4.final.0
+python-bits      : 64
+OS               : Linux
+OS-release       : 4.4.0-19041-Microsoft
+Version          : #488-Microsoft Mon Sep 01 13:43:00 PST 2020
+machine          : x86_64
+processor        : x86_64
+byteorder        : little
+LC_ALL           : None
+LANG             : C.UTF-8
+LOCALE           : en_US.UTF-8
+
+pandas           : 1.2.4
+numpy            : 1.20.3
+pytz             : 2021.1
+dateutil         : 2.8.1
+pip              : 21.1.2
+setuptools       : 57.0.0
+Cython           : 0.29.23
+pytest           : 6.2.4
+hypothesis       : None
+sphinx           : 4.0.2
+blosc            : None
+feather          : None
+xlsxwriter       : 1.4.3
+lxml.etree       : 4.6.3
+html5lib         : None
+pymysql          : None
+psycopg2         : None
+jinja2           : 3.0.1
+IPython          : 7.24.1
+pandas_datareader: None
+bs4              : 4.9.3
+bottleneck       : None
+fsspec           : 2021.06.0
+fastparquet      : None
+gcsfs            : None
+matplotlib       : 3.4.2
+numexpr          : 2.7.3
+odfpy            : None
+openpyxl         : 3.0.7
+pandas_gbq       : None
+pyarrow          : None
+pyxlsb           : None
+s3fs             : None
+scipy            : 1.6.3
+sqlalchemy       : None
+tables           : 3.6.1
+tabulate         : None
+xarray           : None
+xlrd             : 2.0.1
+xlwt             : 1.3.0
+numba            : None
+
+</details>
+",
+2,https://api.github.com/repos/pandas-dev/pandas/issues/41929,https://api.github.com/repos/pandas-dev/pandas,https://api.github.com/repos/pandas-dev/pandas/issues/41929/labels{/name},https://api.github.com/repos/pandas-dev/pandas/issues/41929/comments,https://api.github.com/repos/pandas-dev/pandas/issues/41929/events,https://github.com/pandas-dev/pandas/pull/41929,917577928,MDExOlB1bGxSZXF1ZXN0NjY3MDkyMjAy,41929,REF: de-duplicate IntervalIndex._intersection,"{'login': 'jbrockmendel', 'id': 8078968, 'node_id': 'MDQ6VXNlcjgwNzg5Njg=', 'avatar_url': 'https://avatars.githubusercontent.com/u/8078968?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/jbrockmendel', 'html_url': 'https://github.com/jbrockmendel', 'followers_url': 'https://api.github.com/users/jbrockmendel/followers', 'following_url': 'https://api.github.com/users/jbrockmendel/following{/other_user}', 'gists_url': 'https://api.github.com/users/jbrockmendel/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/jbrockmendel/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/jbrockmendel/subscriptions', 'organizations_url': 'https://api.github.com/users/jbrockmendel/orgs', 'repos_url': 'https://api.github.com/users/jbrockmendel/repos', 'events_url': 'https://api.github.com/users/jbrockmendel/events{/privacy}', 'received_events_url': 'https://api.github.com/users/jbrockmendel/received_events', 'type': 'User', 'site_admin': False}",[],open,False,,[],,0,2021-06-10T17:03:46Z,2021-06-10T17:03:46Z,,MEMBER,,"{'url': 'https://api.github.com/repos/pandas-dev/pandas/pulls/41929', 'html_url': 'https://github.com/pandas-dev/pandas/pull/41929', 'diff_url': 'https://github.com/pandas-dev/pandas/pull/41929.diff', 'patch_url': 'https://github.com/pandas-dev/pandas/pull/41929.patch'}",made possible by #41863,
+3,https://api.github.com/repos/pandas-dev/pandas/issues/41928,https://api.github.com/repos/pandas-dev/pandas,https://api.github.com/repos/pandas-dev/pandas/issues/41928/labels{/name},https://api.github.com/repos/pandas-dev/pandas/issues/41928/comments,https://api.github.com/repos/pandas-dev/pandas/issues/41928/events,https://github.com/pandas-dev/pandas/pull/41928,917558866,MDExOlB1bGxSZXF1ZXN0NjY3MDc2NDI1,41928,CLN: remove references of Travis,"{'login': 'fangchenli', 'id': 7614606, 'node_id': 'MDQ6VXNlcjc2MTQ2MDY=', 'avatar_url': 'https://avatars.githubusercontent.com/u/7614606?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/fangchenli', 'html_url': 'https://github.com/fangchenli', 'followers_url': 'https://api.github.com/users/fangchenli/followers', 'following_url': 'https://api.github.com/users/fangchenli/following{/other_user}', 'gists_url': 'https://api.github.com/users/fangchenli/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/fangchenli/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/fangchenli/subscriptions', 'organizations_url': 'https://api.github.com/users/fangchenli/orgs', 'repos_url': 'https://api.github.com/users/fangchenli/repos', 'events_url': 'https://api.github.com/users/fangchenli/events{/privacy}', 'received_events_url': 'https://api.github.com/users/fangchenli/received_events', 'type': 'User', 'site_admin': False}","[{'id': 48070600, 'node_id': 'MDU6TGFiZWw0ODA3MDYwMA==', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/CI', 'name': 'CI', 'color': 'a2bca7', 'default': False, 'description': 'Related to Continuous Integration'}, {'id': 211029535, 'node_id': 'MDU6TGFiZWwyMTEwMjk1MzU=', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Clean', 'name': 'Clean', 'color': '207de5', 'default': False, 'description': None}, {'id': 134699, 'node_id': 'MDU6TGFiZWwxMzQ2OTk=', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Docs', 'name': 'Docs', 'color': '3465A4', 'default': False, 'description': None}]",open,False,,[],,0,2021-06-10T16:42:19Z,2021-06-10T18:17:48Z,,MEMBER,,"{'url': 'https://api.github.com/repos/pandas-dev/pandas/pulls/41928', 'html_url': 'https://github.com/pandas-dev/pandas/pull/41928', 'diff_url': 'https://github.com/pandas-dev/pandas/pull/41928.diff', 'patch_url': 'https://github.com/pandas-dev/pandas/pull/41928.patch'}","
+",
+4,https://api.github.com/repos/pandas-dev/pandas/issues/41927,https://api.github.com/repos/pandas-dev/pandas,https://api.github.com/repos/pandas-dev/pandas/issues/41927/labels{/name},https://api.github.com/repos/pandas-dev/pandas/issues/41927/comments,https://api.github.com/repos/pandas-dev/pandas/issues/41927/events,https://github.com/pandas-dev/pandas/issues/41927,917419808,MDU6SXNzdWU5MTc0MTk4MDg=,41927,BUG: Timezones are not preserved in Series.mode() output,"{'login': 'willsthompson', 'id': 1315884, 'node_id': 'MDQ6VXNlcjEzMTU4ODQ=', 'avatar_url': 'https://avatars.githubusercontent.com/u/1315884?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/willsthompson', 'html_url': 'https://github.com/willsthompson', 'followers_url': 'https://api.github.com/users/willsthompson/followers', 'following_url': 'https://api.github.com/users/willsthompson/following{/other_user}', 'gists_url': 'https://api.github.com/users/willsthompson/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/willsthompson/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/willsthompson/subscriptions', 'organizations_url': 'https://api.github.com/users/willsthompson/orgs', 'repos_url': 'https://api.github.com/users/willsthompson/repos', 'events_url': 'https://api.github.com/users/willsthompson/events{/privacy}', 'received_events_url': 'https://api.github.com/users/willsthompson/received_events', 'type': 'User', 'site_admin': False}","[{'id': 76811, 'node_id': 'MDU6TGFiZWw3NjgxMQ==', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Bug', 'name': 'Bug', 'color': 'e10c02', 'default': False, 'description': None}, {'id': 1954720290, 'node_id': 'MDU6TGFiZWwxOTU0NzIwMjkw', 'url': 'https://api.github.com/repos/pandas-dev/pandas/labels/Needs%20Triage', 'name': 'Needs Triage', 'color': '0052cc', 'default': False, 'description': 'Issue that has not been reviewed by a pandas team member'}]",open,False,,[],,0,2021-06-10T14:36:22Z,2021-06-10T15:11:26Z,,NONE,,,"- [x] I have checked that this issue has not already been reported.
+
+- [x] I have confirmed this bug exists on the latest version of pandas.
+
+- [ ] (optional) I have confirmed this bug exists on the master branch of pandas.
+
+---
+
+#### Code Sample, a copy-pastable example
+
+```python
+times = pd.Series([pd.Timestamp(datetime.datetime.now(), tz='US/Central') for n in range(5)])
+times.dtype # datetime64[ns, US/Central] == pd.DatetimeTZDtype(tz='US/Central')
+mode_result = times.mode()
+mode_result.dtype # dtype('<M8[ns]') == np.dtype('datetime64[ns]')
+
+```
+
+#### Problem description
+
+The Timestamps are normalized to (I think) UTC time, and the original timezone and offset are lost. `Series.median()` does preserve timezones, so I assumed this is just an unhandled edge case. I'm working around this using `scipy.stats.mode`, which does preserve timezones.
+
+#### Expected Output
+
+```python
+times.mode().dtype == pd.DatetimeTZDtype(tz='US/Central')
+```
+
+#### Output of ``pd.show_versions()``
+
+<details>
+
+INSTALLED VERSIONS
+------------------
+commit           : 2cb96529396d93b46abab7bbc73a208e708c642e
+python           : 3.8.7.final.0
+python-bits      : 64
+OS               : Darwin
+OS-release       : 20.5.0
+Version          : Darwin Kernel Version 20.5.0: Sat May  8 05:10:33 PDT 2021; root:xnu-7195.121.3~9/RELEASE_X86_64
+machine          : x86_64
+processor        : i386
+byteorder        : little
+LC_ALL           : None
+LANG             : None
+LOCALE           : None.UTF-8
+pandas           : 1.2.4
+numpy            : 1.20.2
+pytz             : 2021.1
+dateutil         : 2.8.1
+pip              : 20.3.4
+setuptools       : 49.2.1
+Cython           : 0.29.14
+pytest           : 6.2.4
+hypothesis       : None
+sphinx           : None
+blosc            : None
+feather          : None
+xlsxwriter       : None
+lxml.etree       : None
+html5lib         : None
+pymysql          : None
+psycopg2         : 2.8.6 (dt dec pq3 ext lo64)
+jinja2           : 2.11.3
+IPython          : 7.24.1
+pandas_datareader: None
+bs4              : None
+bottleneck       : None
+fsspec           : None
+fastparquet      : None
+gcsfs            : None
+matplotlib       : None
+numexpr          : None
+odfpy            : None
+openpyxl         : None
+pandas_gbq       : None
+pyarrow          : 2.0.0
+pyxlsb           : None
+s3fs             : None
+scipy            : 1.6.1
+sqlalchemy       : 1.3.23
+tables           : None
+tabulate         : 0.8.9
+xarray           : None
+xlrd             : None
+xlwt             : None
+numba            : None
+
+</details>
+",

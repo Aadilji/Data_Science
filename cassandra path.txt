@@ -1,0 +1,59 @@
+cassandra path
+C:\Program Files\apache-cassandra-3.11.10\bin
+
+
+for downloading cloud path:-
+
+https://auth.cloud.datastax.com/auth/realms/CloudUsers/protocol/openid-connect/auth?client_id=auth-proxy&redirect_uri=https%3A%2F%2Fgatekeeper.auth.cloud.datastax.com%2Fcallback&response_type=code&scope=openid+profile+email&state=31MjYHQ1wdknMtjH3mO4h5oM5MA%3D
+
+
+for connecting cassandra offline from python
+
+import cassandra
+print(cassandra.__version__)
+
+from cassandra.cluster import Cluster
+cluster=Cluster()
+session_offline=cluster.connect()
+
+row = session_offline.execute("select release_version from system.local").one()
+print(row)
+
+
+
+---------------------------------------------------------------------------------------
+<!--Cassandra Cloud-->
+
+
+from cassandra.cluster import Cluster
+from cassandra.auth import PlainTextAuthProvider
+
+cloud_config= {
+        'secure_connect_bundle': 'C:\Program Files\cassandra-cloud bundle zip'
+}
+auth_provider = PlainTextAuthProvider('DlUEzGNDkuveTLZILANqZQrv', 'qTB1RN1TtFtr7IsHNXDIkM,FcNy.GlGtaoFeZFTRlIwmoTq,L2i3-80QZvQgkSfOhT08C32ugOTsaIWGa_90MDXZMp8kpr69SrDW1LS.4+9wfAM5,Hiu4CMKwbcuokZK')
+cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+session = cluster.connect()
+
+row = session.execute("select release_version from system.local").one()
+if row:
+    print(row[0])
+else:
+    print("An error occurred.")
+
+-----------------------------------------------------------------------------------------
+
+from cassandra.cluster import Cluster
+from cassandra.auth import PlainTextAuthProvider
+
+cloud_config= {
+        'secure_connect_bundle': 'E:\secure-connect-TEST.zip'
+}
+auth_provider = PlainTextAuthProvider('HcQrocdPYHjwIikqUrcMYlEj', 'WHemsWkLS6BZZpveGAuL1NpTN8+GmAi1GrUq_peZFq8ksi2fLs_0Zon,rSS8dIEz..gkgzFN5_fpIKiq94Hajur-0TaG-Dp.-9ZeCwCuK3SLiv,g_ESNN,q-FAfhFjm6')
+cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+session = cluster.connect()
+
+row = session.execute("CREATE KEYSPACE AADIL111_keyspace WITH replication = {'class':'SimpleStrategy', 'replication_factor':'1'}").one()
+print(row)
+
+ 

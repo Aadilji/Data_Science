@@ -1,0 +1,4 @@
+import mysql.connector as connection
+mydb = connection.connect(host="localhost",user="root",passwd="Aadil@78600",use_pure=True)
+cur = mydb.cursor()
+https://www.youtube.com/watch?v=MgZrTK595kM
