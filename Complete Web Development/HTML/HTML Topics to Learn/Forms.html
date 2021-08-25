@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Forms</title>
+</head>
+
+<body>
+    <h2>This is HTML forms tutorial</h2>
+    <form action="backend.php"> <!--action ka matlab yeh ki agar hum suppose php as a backend le rhe ho toh yeh pure form ka data backend.php mai save hoga-->
+        Name : <input type="text">
+        Role: <input type="text" name="myRole">
+        
+        <!-- ab name & role dono ek hi line  mai aa jaayege, toh isko alag alag laane ke liye hum <br> la istemal kar sakte hai   -->
+        Name : <input type="text"><br>
+        Role: <input type="text" name="myRole">
+        <hr>
+        
+        <!-- hum div ka bhi istemaal kar sakte hai, ek div pura ek row ka column ka jagah gher leti hai -->
+        <div>
+            Name : <input type="text">
+        </div>
+        <br>
+        <div>
+            Role : <input type="text", name = "my role" >   <!--name humko batata hai ki role ko backend mai kya naam se pehchanege--> 
+        </div>
+        <br>
+        <div>
+            Email: <input type="email" name="myEmail">
+        </div>
+        <br>
+        <div>
+            <input type="submit" value="Submit Now">    <!--hum srf input:submit daba kar enter dabayeg aur  humko vscode automatic, <input type="submit" value=""> de dega-->
+        </div>
+        <div>
+            Date: <input type="date" name="myDate">  <!--similarly press input:datetime aur hame <input type="datetime" name="" id=""> mil jaayega-->
+        </div>
+        <br>
+        <div>
+            Bonus: <input type="number" name="myBonus">
+            <!-- bonus ke box m hum srf number enter kar sakte hai na ki alphabates -->
+        </div>
+        <br>
+        <hr>
+       
+        <h4>radiobutton & checkboxes</h4>
+         <!-- checkbox mtlab, tick the option or not  -->
+         <!-- radio button means select any of the 2 male or female  -->
+        <div>
+            Are you eligible?: <input type="checkbox" name="myEligibility" checked> <!-- press input:chexckbox + enter-->   <!--humne checked likha  , means by default box checked pe rahega--> 
+        </div>
+        <br>
+        <div>
+            Gender: Male <input type="radio" name="myGender">    Female <input type="radio" name="myGender">
+            Other <input type="radio" name="myGender">       
+        </div>
+        <br>
+        <div>
+            <input type="submit" value="Submit Now">    
+            <input type="reset" value="Reset Now">
+
+        </div>
+        <hr>
+        <h3> text area</h3>
+        <div>
+            Write about yourself: <br>
+            <textarea name="myText" cols="90" rows="10"></textarea>
+        </div>   <!--just write textarea and press enter-->
+
+        <br>
+
+        <div>
+            <input type="submit" value="Submit Now">    
+            <input type="reset" value="Reset Now">
+
+        </div>
+        <br>
+        <hr>
+
+        <h2>Labels</h2>
+        <!-- labels ka use hum isiliye krte hai ki agr hum jaise hi box pr click krenge woh field select ho jaayegi  -->
+
+        <label for="name">Name</label>   <!--for = name mtlb yeh label name ka label h-->
+        <div>
+            <input type="text" name="Myname" id = "name">   <!--id are for ki values same hona chahiye-->
+        </div>
+
+        <hr>
+        <h3>select & options</h3>
+        <div>
+            <label for="car">Car</label>
+            <select name="myCar" id="car">
+                <option value="ind">Indica</option>
+                <option value="swf" selected>Swift</option>
+            </select>
+        </div>
+        <br>
+
+        <div>
+            <input type="submit" value="Submit Now">
+            <input type="reset" value="Reset Now">
+        </div>
+    </form>
+</body>
+
+</html>
