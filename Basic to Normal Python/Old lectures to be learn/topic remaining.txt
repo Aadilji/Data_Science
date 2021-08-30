@@ -1,0 +1,10 @@
+old topics - 3
+exception handle
+logging
+list manipulation
+functions
+
+api notes and flask etc from mobile ss
+
+
+pandas live class missing value remove
