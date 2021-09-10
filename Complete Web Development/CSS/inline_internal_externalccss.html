@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Tuturial:- inline internal external css</title>
+    <!-- Adding a style tag in the head  -->
+    <!-- bhai inline css lagi hui hai toh internal css ko apply nhi kiya jaa sakta. becoz inline css ko internal css ke upper importance di jaati hai -->
+    <style>
+        p{
+            color: purple;
+            background-color: seagreen !important; 
+        }  
+        </style>
+        <!-- agar humko chahte hai ki neeche waali css se upper waali css ko prefrence mile toh humk semicolon ke andar important likhna parega-->
+
+<link rel="stylesheet" href="tut13.css">
+<!-- agar external css ko upper rakhoge and internal css ko neeche rakhoge toh neeche waali css ko jyada power milti hai... -->
+
+
+</head>
+<body>
+    <h3>This is a CSS Tutorial</h3>
+    <p>This Tutorial will teach you everything you wanted to know about css</p>
+    <p style="color: red;">This Tutorial will teach you everything you wanted to know about css</p>
+    <p style="color: red; background-color: yellow;">This Tutorial will teach you everything you wanted to know about css</p>
+</body>
+</html>
